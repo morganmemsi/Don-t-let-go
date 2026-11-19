@@ -1,0 +1,643 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DON'T LET GO 😈 | 60s Challenge</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: #0d0d12;
+      color: #ffffff;
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+    }
+
+    .badge {
+      background: #1c1c26;
+      border: 1px solid #2e2e3e;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #a0a0b8;
+    }
+
+    .tip-btn {
+      background: linear-gradient(135deg, #00c853, #009624);
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+    }
+
+    .hud {
+      text-align: center;
+      z-index: 5;
+    }
+
+    .timer {
+      font-size: 4.2rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -2px;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255, 59, 59, 0.4);
+    }
+
+    .taunt {
+      margin-top: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ff5252;
+      min-height: 28px;
+      padding: 0 10px;
+    }
+
+    .arena {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    #holdBtn {
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      border: none;
+      background: radial-gradient(circle at 30% 30%, #ff4b4b, #b30000);
+      color: white;
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      box-shadow: 0 12px 35px rgba(255, 0, 0, 0.45), inset 0 4px 10px rgba(255,255,255,0.35);
+      cursor: pointer;
+      transition: transform 0.1s ease, background 0.2s ease;
+      position: relative;
+      z-index: 4;
+      touch-action: none;
+    }
+
+    #holdBtn.holding {
+      transform: scale(0.92);
+      background: radial-gradient(circle at 30% 30%, #ff1e1e, #7a0000);
+      box-shadow: 0 0 50px rgba(255, 30, 30, 0.8);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-12px, 8px) rotate(-3deg); }
+      40% { transform: translate(12px, -8px) rotate(3deg); }
+      60% { transform: translate(-10px, -6px) rotate(-2deg); }
+      80% { transform: translate(10px, 6px) rotate(2deg); }
+    }
+
+    .shaking {
+      animation: shake 0.35s infinite;
+    }
+
+    .fake-alert {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 270px;
+      background: rgba(35, 35, 42, 0.96);
+      backdrop-filter: blur(10px);
+      border-radius: 14px;
+      text-align: center;
+      z-index: 20;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      border: 1px solid #444;
+      display: none;
+      pointer-events: none;
+    }
+
+    .fake-alert h3 {
+      padding: 16px 16px 6px;
+      font-size: 1.05rem;
+      color: #fff;
+    }
+
+    .fake-alert p {
+      padding: 0 16px 16px;
+      font-size: 0.85rem;
+      color: #ccc;
+    }
+
+    .fake-alert .fake-btn {
+      border-top: 1px solid #444;
+      padding: 12px;
+      color: #0a84ff;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    #spider {
+      position: fixed;
+      font-size: 3.5rem;
+      z-index: 15;
+      pointer-events: none;
+      display: none;
+      transition: all 0.6s linear;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 30;
+    }
+
+    .modal {
+      background: #181822;
+      border: 1px solid #2f2f42;
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .modal h2 {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
+
+    .modal p {
+      color: #b4b4c7;
+      font-size: 0.95rem;
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .btn-share {
+      background: #25D366;
+      color: #000;
+    }
+
+    .btn-retry {
+      background: #2c2c3d;
+      color: #fff;
+    }
+
+    .mpesa-box {
+      background: #101018;
+      border: 1px dashed #00c853;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .mpesa-number {
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: #00e676;
+      letter-spacing: 1px;
+      margin: 6px 0;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .footer-note {
+      font-size: 0.75rem;
+      color: #66667a;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">BEST: <span id="bestScore">0.00</span>s</div>
+    <button class="tip-btn" onclick="openTipModal()">☕ Tip Dev</button>
+  </div>
+
+  <div class="hud">
+    <div class="timer" id="timerDisplay">0.00s</div>
+    <div class="taunt" id="tauntText">Turn volume UP 🔊 & hold for 60s!</div>
+  </div>
+
+  <div class="arena" id="arena">
+    <button id="holdBtn">HOLD ME</button>
+  </div>
+
+  <div class="footer-note">🔊 Sound ON recommended • 99.4% fail before 30s</div>
+
+  <!-- Troll Elements -->
+  <div class="fake-alert" id="fakeAlert">
+    <h3>⚠️ Low Battery</h3>
+    <p>1% of battery remaining. Device will shut down in 3 seconds.</p>
+    <div class="fake-btn">Close</div>
+  </div>
+  <div id="spider">🕷️</div>
+
+  <!-- Game Over Modal -->
+  <div class="modal-overlay" id="gameOverModal">
+    <div class="modal">
+      <h2 id="endTitle">YOU FLINCHED! 😂</h2>
+      <p id="endStats">You lasted 4.21 seconds.</p>
+      <button class="btn-action btn-share" onclick="shareScore()">📲 Dare a Friend on WhatsApp</button>
+      <button class="btn-action btn-retry" onclick="closeGameOver()">Try Again</button>
+    </div>
+  </div>
+
+  <!-- Monetization / Tip Modal -->
+  <div class="modal-overlay" id="tipModal">
+    <div class="modal">
+      <h2>Fuel the Chaos ☕</h2>
+      <p>Made you jump? Drop a tiny tip to keep stupid games alive!</p>
+      <div class="mpesa-box">
+        <div style="font-size:0.8rem; color:#aaa;">M-PESA / POCHI LA BIASHARA</div>
+        <div class="mpesa-number" id="mpesaNum">07XX XXX XXX</div>
+        <button class="tip-btn" style="margin-top:6px;" onclick="copyMpesa()">Copy Number</button>
+      </div>
+      <a href="https://ko-fi.com" target="_blank" style="display:block; color:#29b6f6; font-weight:700; margin-bottom:16px; text-decoration:none; font-size:0.9rem;">
+        🌍 International? Tip via Ko-fi →
+      </a>
+      <button class="btn-action btn-retry" onclick="closeTipModal()">Back to Game</button>
+    </div>
+  </div>
+
+  <script>
+    const holdBtn = document.getElementById('holdBtn');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const tauntText = document.getElementById('tauntText');
+    const bestScoreEl = document.getElementById('bestScore');
+    const fakeAlert = document.getElementById('fakeAlert');
+    const spider = document.getElementById('spider');
+
+    let isHolding = false;
+    let startTime = 0;
+    let elapsed = 0;
+    let rafId = null;
+    let trollInterval = null;
+    let heartbeatTimeout = null;
+    let bestScore = parseFloat(localStorage.getItem('dontLetGoBest') || '0');
+    bestScoreEl.textContent = bestScore.toFixed(2);
+
+    // --- WEB AUDIO SYNTHESIZER ---
+    let audioCtx = null;
+    let tensionOsc = null;
+    let tensionGain = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function startTensionAudio() {
+      initAudio();
+      // Rising annoying high-pitch mosquito/tension drone
+      tensionOsc = audioCtx.createOscillator();
+      tensionGain = audioCtx.createGain();
+      tensionOsc.type = 'sawtooth';
+      tensionOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
+
+      // Lowpass filter so it starts muffled and gets harsher over time
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+      filter.frequency.linearRampToValueAtTime(2200, audioCtx.currentTime + 60);
+
+      tensionGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+      tensionGain.gain.linearRampToValueAtTime(0.14, audioCtx.currentTime + 60);
+
+      tensionOsc.connect(filter);
+      filter.connect(tensionGain);
+      tensionGain.connect(audioCtx.destination);
+      tensionOsc.start();
+
+      // Start accelerating heartbeat
+      scheduleHeartbeat();
+    }
+
+    function updateTensionPitch(seconds) {
+      if (!tensionOsc || !audioCtx) return;
+      // Rises from 110Hz up to an unbearable 950Hz at 60s
+      const freq = 110 + (seconds * 14);
+      tensionOsc.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.1);
+    }
+
+    function stopTensionAudio() {
+      clearTimeout(heartbeatTimeout);
+      if (tensionOsc) {
+        try {
+          tensionOsc.stop();
+          tensionOsc.disconnect();
+        } catch (e) {}
+        tensionOsc = null;
+      }
+    }
+
+    function scheduleHeartbeat() {
+      if (!isHolding) return;
+      playHeartbeatThump();
+      // Heartbeat gets faster as elapsed approaches 60s (from 750ms down to 220ms)
+      const interval = Math.max(220, 750 - (elapsed * 9));
+      heartbeatTimeout = setTimeout(scheduleHeartbeat, interval);
+    }
+
+    function playHeartbeatThump() {
+      if (!audioCtx || !isHolding) return;
+      const now = audioCtx.currentTime;
+
+      // Double thump (lub-dub)
+      [0, 0.14].forEach((offset, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(idx === 0 ? 75 : 60, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(28, now + offset + 0.12);
+
+        gain.gain.setValueAtTime(0.45, now + offset);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.13);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.14);
+      });
+    }
+
+    function playNotificationPing() {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(880, now);
+      osc.frequency.setValueAtTime(1174.66, now + 0.09); // Classic two-tone alert ping
+
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.36);
+    }
+
+    function playJumpScareScream() {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+
+      // 3 dissonant screaming oscillators
+      [420, 587, 1340].forEach((startFreq) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(startFreq, now);
+        osc.frequency.linearRampToValueAtTime(startFreq * 1.7, now + 0.15);
+        osc.frequency.exponentialRampToValueAtTime(90, now + 0.65);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.68);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.7);
+      });
+    }
+
+    function playVictoryFanfare() {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + i * 0.12);
+        gain.gain.setValueAtTime(0.25, now + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.4);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + i * 0.12);
+        osc.stop(now + i * 0.12 + 0.42);
+      });
+    }
+
+    // --- GAME LOGIC ---
+    const taunts = [
+      "Don't blink...",
+      "Your thumb is getting sweaty 👀",
+      "Is that a notification?!",
+      "Keep holding, weakling...",
+      "Almost halfway... NOT!",
+      "Don't lift your finger!",
+      "Why are you shaking? 😂",
+      "99% quit right here!"
+    ];
+
+    function startHold(e) {
+      e.preventDefault();
+      if (isHolding) return;
+      isHolding = true;
+      elapsed = 0;
+      startTime = performance.now();
+      holdBtn.classList.add('holding');
+      holdBtn.textContent = "DON'T LET GO!";
+      tauntText.textContent = "Hold steady...";
+
+      startTensionAudio();
+      if (navigator.vibrate) navigator.vibrate(40);
+
+      updateTimer();
+      trollInterval = setInterval(triggerTroll, 3000);
+    }
+
+    function endHold() {
+      if (!isHolding) return;
+      isHolding = false;
+      cancelAnimationFrame(rafId);
+      clearInterval(trollInterval);
+      stopTensionAudio();
+      resetVisualTrolls();
+
+      // Jump-scare sound + heavy vibration on fail!
+      playJumpScareScream();
+      if (navigator.vibrate) navigator.vibrate([200, 50, 300]);
+
+      holdBtn.classList.remove('holding');
+      holdBtn.textContent = "HOLD ME";
+
+      if (elapsed > bestScore) {
+        bestScore = elapsed;
+        localStorage.setItem('dontLetGoBest', bestScore.toFixed(2));
+        bestScoreEl.textContent = bestScore.toFixed(2);
+      }
+
+      showGameOver(elapsed);
+    }
+
+    function updateTimer() {
+      if (!isHolding) return;
+      elapsed = (performance.now() - startTime) / 1000;
+      timerDisplay.textContent = elapsed.toFixed(2) + 's';
+      updateTensionPitch(elapsed);
+
+      if (elapsed >= 60) {
+        isHolding = false;
+        clearInterval(trollInterval);
+        stopTensionAudio();
+        resetVisualTrolls();
+        playVictoryFanfare();
+        bestScore = 60.00;
+        localStorage.setItem('dontLetGoBest', '60.00');
+        bestScoreEl.textContent = '60.00';
+        showGameOver(60.00, true);
+        return;
+      }
+      rafId = requestAnimationFrame(updateTimer);
+    }
+
+    function triggerTroll() {
+      if (!isHolding) return;
+      const roll = Math.floor(Math.random() * 5);
+      tauntText.textContent = taunts[Math.floor(Math.random() * taunts.length)];
+
+      if (roll === 0) {
+        document.body.classList.add('shaking');
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
+        setTimeout(() => document.body.classList.remove('shaking'), 900);
+      } else if (roll === 1) {
+        fakeAlert.style.display = 'block';
+        playNotificationPing();
+        if (navigator.vibrate) navigator.vibrate(150);
+        setTimeout(() => { fakeAlert.style.display = 'none'; }, 1600);
+      } else if (roll === 2) {
+        spider.style.display = 'block';
+        spider.style.top = '10%';
+        spider.style.left = '-20%';
+        setTimeout(() => {
+          spider.style.top = '75%';
+          spider.style.left = '110%';
+        }, 50);
+        setTimeout(() => { spider.style.display = 'none'; }, 1400);
+      } else if (roll === 3) {
+        const x = (Math.random() - 0.5) * 90;
+        const y = (Math.random() - 0.5) * 120;
+        holdBtn.style.transform = `translate(${x}px, ${y}px) scale(0.92)`;
+      } else {
+        document.body.style.background = '#3b0000';
+        setTimeout(() => { document.body.style.background = '#0d0d12'; }, 250);
+      }
+    }
+
+    function resetVisualTrolls() {
+      document.body.classList.remove('shaking');
+      document.body.style.background = '#0d0d12';
+      fakeAlert.style.display = 'none';
+      spider.style.display = 'none';
+      holdBtn.style.transform = '';
+    }
+
+    function showGameOver(score, won = false) {
+      const title = document.getElementById('endTitle');
+      const stats = document.getElementById('endStats');
+
+      if (won) {
+        title.textContent = "LEGENDARY! 🏆";
+        stats.textContent = "You survived all 60.00 seconds without flinching!";
+      } else if (score < 5) {
+        title.textContent = "WEAK THUMB 😂";
+        stats.textContent = `You only lasted ${score.toFixed(2)}s! My grandma holds longer than that.`;
+      } else if (score < 20) {
+        title.textContent = "YOU FLINCHED! 💀";
+        stats.textContent = `You lasted ${score.toFixed(2)}s before panicking.`;
+      } else {
+        title.textContent = "SO CLOSE! 🔥";
+        stats.textContent = `Impressive! You held on for ${score.toFixed(2)}s.`;
+      }
+
+      document.getElementById('gameOverModal').style.display = 'flex';
+    }
+
+    function closeGameOver() {
+      document.getElementById('gameOverModal').style.display = 'none';
+      timerDisplay.textContent = '0.00s';
+      tauntText.textContent = 'Try again if you dare...';
+    }
+
+    function shareScore() {
+      const url = window.location.href;
+      const text = `😈 I lasted ${elapsed.toFixed(2)} seconds on the DON'T LET GO challenge with sound ON! Bet you can't beat 15s 👉 ${url}`;
+      if (navigator.share) {
+        navigator.share({ title: "Don't Let Go Challenge", text: text, url: url });
+      } else {
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+      }
+    }
+
+    function openTipModal() {
+      document.getElementById('tipModal').style.display = 'flex';
+    }
+
+    function closeTipModal() {
+      document.getElementById('tipModal').style.display = 'none';
+    }
+
+    function copyMpesa() {
+      const num = document.getElementById('mpesaNum').textContent;
+      navigator.clipboard.writeText(num);
+      alert('Number copied! Thanks for the support 🙌');
+    }
+
+    holdBtn.addEventListener('touchstart', startHold, { passive: false });
+    window.addEventListener('touchend', endHold);
+    window.addEventListener('touchcancel', endHold);
+
+    holdBtn.addEventListener('mousedown', startHold);
+    window.addEventListener('mouseup', endHold);
+  </script>
+</body>
+                               </html>
+          
